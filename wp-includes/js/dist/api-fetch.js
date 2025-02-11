@@ -130,7 +130,6 @@ const createRootURLMiddleware = rootURL => (options, next) => {
 ;// external ["wp","url"]
 const external_wp_url_namespaceObject = window["wp"]["url"];
 ;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/preloading.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -740,7 +739,7 @@ function apiFetch(options) {
   // ```
   // opts1 => m1( opts1, opts2 => m2( opts2, opts3 => m3( opts3, fetchHandler ) ) );
   // ```
-  const enhancedHandler = middlewares.reduceRight((/** @type {FetchHandler} */next, middleware) => {
+  const enhancedHandler = middlewares.reduceRight(( /** @type {FetchHandler} */next, middleware) => {
     return workingOptions => middleware(workingOptions, next);
   }, fetchHandler);
   return enhancedHandler(options).catch(error => {

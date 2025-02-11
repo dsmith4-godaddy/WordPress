@@ -1,6 +1,189 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 6689:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createUndoManager: () => (/* binding */ createUndoManager)
+/* harmony export */ });
+/* harmony import */ var _wordpress_is_shallow_equal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(923);
+/* harmony import */ var _wordpress_is_shallow_equal__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_is_shallow_equal__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * WordPress dependencies
+ */
+
+
+/** @typedef {import('./types').HistoryRecord}  HistoryRecord */
+/** @typedef {import('./types').HistoryChange}  HistoryChange */
+/** @typedef {import('./types').HistoryChanges} HistoryChanges */
+/** @typedef {import('./types').UndoManager} UndoManager */
+
+/**
+ * Merge changes for a single item into a record of changes.
+ *
+ * @param {Record< string, HistoryChange >} changes1 Previous changes
+ * @param {Record< string, HistoryChange >} changes2 NextChanges
+ *
+ * @return {Record< string, HistoryChange >} Merged changes
+ */
+function mergeHistoryChanges(changes1, changes2) {
+  /**
+   * @type {Record< string, HistoryChange >}
+   */
+  const newChanges = {
+    ...changes1
+  };
+  Object.entries(changes2).forEach(([key, value]) => {
+    if (newChanges[key]) {
+      newChanges[key] = {
+        ...newChanges[key],
+        to: value.to
+      };
+    } else {
+      newChanges[key] = value;
+    }
+  });
+  return newChanges;
+}
+
+/**
+ * Adds history changes for a single item into a record of changes.
+ *
+ * @param {HistoryRecord}  record  The record to merge into.
+ * @param {HistoryChanges} changes The changes to merge.
+ */
+const addHistoryChangesIntoRecord = (record, changes) => {
+  const existingChangesIndex = record?.findIndex(({
+    id: recordIdentifier
+  }) => {
+    return typeof recordIdentifier === 'string' ? recordIdentifier === changes.id : _wordpress_is_shallow_equal__WEBPACK_IMPORTED_MODULE_0___default()(recordIdentifier, changes.id);
+  });
+  const nextRecord = [...record];
+  if (existingChangesIndex !== -1) {
+    // If the edit is already in the stack leave the initial "from" value.
+    nextRecord[existingChangesIndex] = {
+      id: changes.id,
+      changes: mergeHistoryChanges(nextRecord[existingChangesIndex].changes, changes.changes)
+    };
+  } else {
+    nextRecord.push(changes);
+  }
+  return nextRecord;
+};
+
+/**
+ * Creates an undo manager.
+ *
+ * @return {UndoManager} Undo manager.
+ */
+function createUndoManager() {
+  /**
+   * @type {HistoryRecord[]}
+   */
+  let history = [];
+  /**
+   * @type {HistoryRecord}
+   */
+  let stagedRecord = [];
+  /**
+   * @type {number}
+   */
+  let offset = 0;
+  const dropPendingRedos = () => {
+    history = history.slice(0, offset || undefined);
+    offset = 0;
+  };
+  const appendStagedRecordToLatestHistoryRecord = () => {
+    var _history$index;
+    const index = history.length === 0 ? 0 : history.length - 1;
+    let latestRecord = (_history$index = history[index]) !== null && _history$index !== void 0 ? _history$index : [];
+    stagedRecord.forEach(changes => {
+      latestRecord = addHistoryChangesIntoRecord(latestRecord, changes);
+    });
+    stagedRecord = [];
+    history[index] = latestRecord;
+  };
+
+  /**
+   * Checks whether a record is empty.
+   * A record is considered empty if it the changes keep the same values.
+   * Also updates to function values are ignored.
+   *
+   * @param {HistoryRecord} record
+   * @return {boolean} Whether the record is empty.
+   */
+  const isRecordEmpty = record => {
+    const filteredRecord = record.filter(({
+      changes
+    }) => {
+      return Object.values(changes).some(({
+        from,
+        to
+      }) => typeof from !== 'function' && typeof to !== 'function' && !_wordpress_is_shallow_equal__WEBPACK_IMPORTED_MODULE_0___default()(from, to));
+    });
+    return !filteredRecord.length;
+  };
+  return {
+    /**
+     * Record changes into the history.
+     *
+     * @param {HistoryRecord=} record   A record of changes to record.
+     * @param {boolean}        isStaged Whether to immediately create an undo point or not.
+     */
+    addRecord(record, isStaged = false) {
+      const isEmpty = !record || isRecordEmpty(record);
+      if (isStaged) {
+        if (isEmpty) {
+          return;
+        }
+        record.forEach(changes => {
+          stagedRecord = addHistoryChangesIntoRecord(stagedRecord, changes);
+        });
+      } else {
+        dropPendingRedos();
+        if (stagedRecord.length) {
+          appendStagedRecordToLatestHistoryRecord();
+        }
+        if (isEmpty) {
+          return;
+        }
+        history.push(record);
+      }
+    },
+    undo() {
+      if (stagedRecord.length) {
+        dropPendingRedos();
+        appendStagedRecordToLatestHistoryRecord();
+      }
+      const undoRecord = history[history.length - 1 + offset];
+      if (!undoRecord) {
+        return;
+      }
+      offset -= 1;
+      return undoRecord;
+    },
+    redo() {
+      const redoRecord = history[history.length + offset];
+      if (!redoRecord) {
+        return;
+      }
+      offset += 1;
+      return redoRecord;
+    },
+    hasUndo() {
+      return !!history[history.length - 1 + offset];
+    },
+    hasRedo() {
+      return !!history[history.length + offset];
+    }
+  };
+}
+
+
+/***/ }),
+
 /***/ 3758:
 /***/ (function(module) {
 
@@ -2009,6 +2192,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*global define:false */
 }) (typeof Mousetrap !== "undefined" ? Mousetrap : undefined);
 
 
+/***/ }),
+
+/***/ 923:
+/***/ ((module) => {
+
+"use strict";
+module.exports = window["wp"]["isShallowEqual"];
+
 /***/ })
 
 /******/ 	});
@@ -2398,19 +2589,10 @@ var __setModuleDefault = Object.create ? (function(o, v) {
   o["default"] = v;
 };
 
-var ownKeys = function(o) {
-  ownKeys = Object.getOwnPropertyNames || function (o) {
-    var ar = [];
-    for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-    return ar;
-  };
-  return ownKeys(o);
-};
-
 function __importStar(mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+  if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
   __setModuleDefault(result, mod);
   return result;
 }
@@ -2491,25 +2673,12 @@ function __disposeResources(env) {
   return next();
 }
 
-function __rewriteRelativeImportExtension(path, preserveJsx) {
-  if (typeof path === "string" && /^\.\.?\//.test(path)) {
-      return path.replace(/\.(tsx)$|((?:\.d)?)((?:\.[^./]+?)?)\.([cm]?)ts$/i, function (m, tsx, d, ext, cm) {
-          return tsx ? preserveJsx ? ".jsx" : ".js" : d && (!ext || !cm) ? m : (d + ext + "." + cm.toLowerCase() + "js");
-      });
-  }
-  return path;
-}
-
 /* harmony default export */ const tslib_es6 = ({
   __extends,
   __assign,
   __rest,
   __decorate,
   __param,
-  __esDecorate,
-  __runInitializers,
-  __propKey,
-  __setFunctionName,
   __metadata,
   __awaiter,
   __generator,
@@ -2532,7 +2701,6 @@ function __rewriteRelativeImportExtension(path, preserveJsx) {
   __classPrivateFieldIn,
   __addDisposableResource,
   __disposeResources,
-  __rewriteRelativeImportExtension,
 });
 
 ;// ./node_modules/lower-case/dist.es2015/index.js
@@ -3008,7 +3176,6 @@ function observableMap() {
 }
 
 ;// ./node_modules/@wordpress/compose/build-module/higher-order/pipe.js
-/* wp:polyfill */
 /**
  * Parts of this source were derived and modified from lodash,
  * released under the MIT license.
@@ -3137,9 +3304,9 @@ function ifCondition(predicate) {
 }
 /* harmony default export */ const if_condition = (ifCondition);
 
-;// external ["wp","isShallowEqual"]
-const external_wp_isShallowEqual_namespaceObject = window["wp"]["isShallowEqual"];
-var external_wp_isShallowEqual_default = /*#__PURE__*/__webpack_require__.n(external_wp_isShallowEqual_namespaceObject);
+// EXTERNAL MODULE: external ["wp","isShallowEqual"]
+var external_wp_isShallowEqual_ = __webpack_require__(923);
+var external_wp_isShallowEqual_default = /*#__PURE__*/__webpack_require__.n(external_wp_isShallowEqual_);
 ;// external ["wp","element"]
 const external_wp_element_namespaceObject = window["wp"]["element"];
 ;// ./node_modules/@wordpress/compose/build-module/higher-order/pure/index.js
@@ -3190,7 +3357,6 @@ const pure = createHigherOrderComponent(function (WrappedComponent) {
 const external_wp_deprecated_namespaceObject = window["wp"]["deprecated"];
 var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external_wp_deprecated_namespaceObject);
 ;// ./node_modules/@wordpress/compose/build-module/higher-order/with-global-events/listener.js
-/* wp:polyfill */
 /**
  * Class responsible for orchestrating event handling on the global window,
  * binding a single event to be shared across all handling instances, and
@@ -3202,7 +3368,7 @@ class Listener {
     this.listeners = {};
     this.handleEvent = this.handleEvent.bind(this);
   }
-  add(/** @type {any} */eventType, /** @type {any} */instance) {
+  add( /** @type {any} */eventType, /** @type {any} */instance) {
     if (!this.listeners[eventType]) {
       // Adding first listener for this type, so bind event.
       window.addEventListener(eventType, this.handleEvent);
@@ -3210,19 +3376,19 @@ class Listener {
     }
     this.listeners[eventType].push(instance);
   }
-  remove(/** @type {any} */eventType, /** @type {any} */instance) {
+  remove( /** @type {any} */eventType, /** @type {any} */instance) {
     if (!this.listeners[eventType]) {
       return;
     }
-    this.listeners[eventType] = this.listeners[eventType].filter((/** @type {any} */listener) => listener !== instance);
+    this.listeners[eventType] = this.listeners[eventType].filter(( /** @type {any} */listener) => listener !== instance);
     if (!this.listeners[eventType].length) {
       // Removing last listener for this type, so unbind event.
       window.removeEventListener(eventType, this.handleEvent);
       delete this.listeners[eventType];
     }
   }
-  handleEvent(/** @type {any} */event) {
-    this.listeners[event.type]?.forEach((/** @type {any} */instance) => {
+  handleEvent( /** @type {any} */event) {
+    this.listeners[event.type]?.forEach(( /** @type {any} */instance) => {
       instance.handleEvent(event);
     });
   }
@@ -3230,7 +3396,6 @@ class Listener {
 /* harmony default export */ const listener = (Listener);
 
 ;// ./node_modules/@wordpress/compose/build-module/higher-order/with-global-events/index.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -3278,7 +3443,7 @@ function withGlobalEvents(eventTypesToHandlers) {
   // @ts-ignore We don't need to fix the type-related issues because this is deprecated.
   return createHigherOrderComponent(WrappedComponent => {
     class Wrapper extends external_wp_element_namespaceObject.Component {
-      constructor(/** @type {any} */props) {
+      constructor( /** @type {any} */props) {
         super(props);
         this.handleEvent = this.handleEvent.bind(this);
         this.handleRef = this.handleRef.bind(this);
@@ -3293,8 +3458,8 @@ function withGlobalEvents(eventTypesToHandlers) {
           with_global_events_listener.remove(eventType, this);
         });
       }
-      handleEvent(/** @type {any} */event) {
-        const handler = eventTypesToHandlers[(/** @type {keyof GlobalEventHandlersEventMap} */
+      handleEvent( /** @type {any} */event) {
+        const handler = eventTypesToHandlers[( /** @type {keyof GlobalEventHandlersEventMap} */
         event.type
 
         /* eslint-enable jsdoc/no-undefined-types */)];
@@ -3302,7 +3467,7 @@ function withGlobalEvents(eventTypesToHandlers) {
           this.wrappedRef[handler](event);
         }
       }
-      handleRef(/** @type {any} */el) {
+      handleRef( /** @type {any} */el) {
         this.wrappedRef = el;
         // Any component using `withGlobalEvents` that is not setting a `ref`
         // will cause `this.props.forwardedRef` to be `null`, so we need this
@@ -3402,7 +3567,6 @@ const withInstanceId = createHigherOrderComponent(WrappedComponent => {
 /* harmony default export */ const with_instance_id = (withInstanceId);
 
 ;// ./node_modules/@wordpress/compose/build-module/higher-order/with-safe-timeout/index.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -3495,7 +3659,7 @@ function withState(initialState = {}) {
   });
   return createHigherOrderComponent(OriginalComponent => {
     return class WrappedComponent extends external_wp_element_namespaceObject.Component {
-      constructor(/** @type {any} */props) {
+      constructor( /** @type {any} */props) {
         super(props);
         this.setState = this.setState.bind(this);
         this.state = initialState;
@@ -3586,8 +3750,8 @@ function useRefEffect(callback, dependencies) {
  * ```
  */
 function useConstrainedTabbing() {
-  return useRefEffect((/** @type {HTMLElement} */node) => {
-    function onKeyDown(/** @type {KeyboardEvent} */event) {
+  return useRefEffect(( /** @type {HTMLElement} */node) => {
+    function onKeyDown( /** @type {KeyboardEvent} */event) {
       const {
         key,
         shiftKey,
@@ -3597,7 +3761,7 @@ function useConstrainedTabbing() {
         return;
       }
       const action = shiftKey ? 'findPrevious' : 'findNext';
-      const nextElement = external_wp_dom_namespaceObject.focus.tabbable[action](/** @type {HTMLElement} */target) || null;
+      const nextElement = external_wp_dom_namespaceObject.focus.tabbable[action]( /** @type {HTMLElement} */target) || null;
 
       // When the target element contains the element that is about to
       // receive focus, for example when the target is a tabbable
@@ -3605,7 +3769,7 @@ function useConstrainedTabbing() {
       // In this case we can't rely on native browsers behavior. We need
       // to manage focus instead.
       // See https://github.com/WordPress/gutenberg/issues/46041.
-      if (/** @type {HTMLElement} */target.contains(nextElement)) {
+      if ( /** @type {HTMLElement} */target.contains(nextElement)) {
         event.preventDefault();
         nextElement?.focus();
         return;
@@ -3744,9 +3908,7 @@ function useCopyOnClick(ref, text, timeout = 4000) {
  */
 function useUpdatedRef(value) {
   const ref = (0,external_wp_element_namespaceObject.useRef)(value);
-  (0,external_wp_element_namespaceObject.useLayoutEffect)(() => {
-    ref.current = value;
-  }, [value]);
+  ref.current = value;
   return ref;
 }
 
@@ -3792,7 +3954,6 @@ function useCopyToClipboard(text, onSuccess) {
 ;// external ["wp","keycodes"]
 const external_wp_keycodes_namespaceObject = window["wp"]["keycodes"];
 ;// ./node_modules/@wordpress/compose/build-module/hooks/use-focus-on-mount/index.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -3916,7 +4077,6 @@ function useFocusReturn(onFocusReturn) {
   }, [onFocusReturn]);
   return (0,external_wp_element_namespaceObject.useCallback)(node => {
     if (node) {
-      var _activeDocument$activ;
       // Set ref to be used when unmounting.
       ref.current = node;
 
@@ -3924,8 +4084,7 @@ function useFocusReturn(onFocusReturn) {
       if (focusedBeforeMount.current) {
         return;
       }
-      const activeDocument = node.ownerDocument.activeElement instanceof window.HTMLIFrameElement ? node.ownerDocument.activeElement.contentDocument : node.ownerDocument;
-      focusedBeforeMount.current = (_activeDocument$activ = activeDocument?.activeElement) !== null && _activeDocument$activ !== void 0 ? _activeDocument$activ : null;
+      focusedBeforeMount.current = node.ownerDocument.activeElement;
     } else if (focusedBeforeMount.current) {
       const isFocused = ref.current?.contains(ref.current?.ownerDocument.activeElement);
       if (ref.current?.isConnected && !isFocused) {
@@ -4103,7 +4262,6 @@ function useFocusOutside(onFocusOutside) {
 }
 
 ;// ./node_modules/@wordpress/compose/build-module/hooks/use-merge-refs/index.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -4298,7 +4456,6 @@ function useDialog(options) {
 /* harmony default export */ const use_dialog = (useDialog);
 
 ;// ./node_modules/@wordpress/compose/build-module/hooks/use-disabled/index.js
-/* wp:polyfill */
 /**
  * Internal dependencies
  */
@@ -4520,7 +4677,6 @@ var mousetrap_default = /*#__PURE__*/__webpack_require__.n(mousetrap_mousetrap);
 // EXTERNAL MODULE: ./node_modules/mousetrap/plugins/global-bind/mousetrap-global-bind.js
 var mousetrap_global_bind = __webpack_require__(5760);
 ;// ./node_modules/@wordpress/compose/build-module/hooks/use-keyboard-shortcut/index.js
-/* wp:polyfill */
 /**
  * External dependencies
  */
@@ -4554,7 +4710,7 @@ var mousetrap_global_bind = __webpack_require__(5760);
  * @param {(e: import('mousetrap').ExtendedKeyboardEvent, combo: string) => void} callback  Shortcut callback.
  * @param {WPKeyboardShortcutConfig}                                              options   Shortcut options.
  */
-function useKeyboardShortcut(/* eslint-enable jsdoc/valid-types */
+function useKeyboardShortcut( /* eslint-enable jsdoc/valid-types */
 shortcuts, callback, {
   bindGlobal = false,
   eventName = 'keydown',
@@ -4592,7 +4748,7 @@ shortcuts, callback, {
       }
       const bindFn = bindGlobal ? 'bindGlobal' : 'bind';
       // @ts-ignore `bindGlobal` is an undocumented property
-      mousetrap[bindFn](shortcut, (/* eslint-disable jsdoc/valid-types */
+      mousetrap[bindFn](shortcut, ( /* eslint-disable jsdoc/valid-types */
       /** @type {[e: import('mousetrap').ExtendedKeyboardEvent, combo: string]} */...args) => /* eslint-enable jsdoc/valid-types */
       currentCallbackRef.current(...args), eventName);
     });
@@ -4703,179 +4859,8 @@ function usePrevious(value) {
 const useReducedMotion = () => useMediaQuery('(prefers-reduced-motion: reduce)');
 /* harmony default export */ const use_reduced_motion = (useReducedMotion);
 
-;// ./node_modules/@wordpress/undo-manager/build-module/index.js
-/* wp:polyfill */
-/**
- * WordPress dependencies
- */
-
-
-/** @typedef {import('./types').HistoryRecord}  HistoryRecord */
-/** @typedef {import('./types').HistoryChange}  HistoryChange */
-/** @typedef {import('./types').HistoryChanges} HistoryChanges */
-/** @typedef {import('./types').UndoManager} UndoManager */
-
-/**
- * Merge changes for a single item into a record of changes.
- *
- * @param {Record< string, HistoryChange >} changes1 Previous changes
- * @param {Record< string, HistoryChange >} changes2 NextChanges
- *
- * @return {Record< string, HistoryChange >} Merged changes
- */
-function mergeHistoryChanges(changes1, changes2) {
-  /**
-   * @type {Record< string, HistoryChange >}
-   */
-  const newChanges = {
-    ...changes1
-  };
-  Object.entries(changes2).forEach(([key, value]) => {
-    if (newChanges[key]) {
-      newChanges[key] = {
-        ...newChanges[key],
-        to: value.to
-      };
-    } else {
-      newChanges[key] = value;
-    }
-  });
-  return newChanges;
-}
-
-/**
- * Adds history changes for a single item into a record of changes.
- *
- * @param {HistoryRecord}  record  The record to merge into.
- * @param {HistoryChanges} changes The changes to merge.
- */
-const addHistoryChangesIntoRecord = (record, changes) => {
-  const existingChangesIndex = record?.findIndex(({
-    id: recordIdentifier
-  }) => {
-    return typeof recordIdentifier === 'string' ? recordIdentifier === changes.id : external_wp_isShallowEqual_default()(recordIdentifier, changes.id);
-  });
-  const nextRecord = [...record];
-  if (existingChangesIndex !== -1) {
-    // If the edit is already in the stack leave the initial "from" value.
-    nextRecord[existingChangesIndex] = {
-      id: changes.id,
-      changes: mergeHistoryChanges(nextRecord[existingChangesIndex].changes, changes.changes)
-    };
-  } else {
-    nextRecord.push(changes);
-  }
-  return nextRecord;
-};
-
-/**
- * Creates an undo manager.
- *
- * @return {UndoManager} Undo manager.
- */
-function createUndoManager() {
-  /**
-   * @type {HistoryRecord[]}
-   */
-  let history = [];
-  /**
-   * @type {HistoryRecord}
-   */
-  let stagedRecord = [];
-  /**
-   * @type {number}
-   */
-  let offset = 0;
-  const dropPendingRedos = () => {
-    history = history.slice(0, offset || undefined);
-    offset = 0;
-  };
-  const appendStagedRecordToLatestHistoryRecord = () => {
-    var _history$index;
-    const index = history.length === 0 ? 0 : history.length - 1;
-    let latestRecord = (_history$index = history[index]) !== null && _history$index !== void 0 ? _history$index : [];
-    stagedRecord.forEach(changes => {
-      latestRecord = addHistoryChangesIntoRecord(latestRecord, changes);
-    });
-    stagedRecord = [];
-    history[index] = latestRecord;
-  };
-
-  /**
-   * Checks whether a record is empty.
-   * A record is considered empty if it the changes keep the same values.
-   * Also updates to function values are ignored.
-   *
-   * @param {HistoryRecord} record
-   * @return {boolean} Whether the record is empty.
-   */
-  const isRecordEmpty = record => {
-    const filteredRecord = record.filter(({
-      changes
-    }) => {
-      return Object.values(changes).some(({
-        from,
-        to
-      }) => typeof from !== 'function' && typeof to !== 'function' && !external_wp_isShallowEqual_default()(from, to));
-    });
-    return !filteredRecord.length;
-  };
-  return {
-    /**
-     * Record changes into the history.
-     *
-     * @param {HistoryRecord=} record   A record of changes to record.
-     * @param {boolean}        isStaged Whether to immediately create an undo point or not.
-     */
-    addRecord(record, isStaged = false) {
-      const isEmpty = !record || isRecordEmpty(record);
-      if (isStaged) {
-        if (isEmpty) {
-          return;
-        }
-        record.forEach(changes => {
-          stagedRecord = addHistoryChangesIntoRecord(stagedRecord, changes);
-        });
-      } else {
-        dropPendingRedos();
-        if (stagedRecord.length) {
-          appendStagedRecordToLatestHistoryRecord();
-        }
-        if (isEmpty) {
-          return;
-        }
-        history.push(record);
-      }
-    },
-    undo() {
-      if (stagedRecord.length) {
-        dropPendingRedos();
-        appendStagedRecordToLatestHistoryRecord();
-      }
-      const undoRecord = history[history.length - 1 + offset];
-      if (!undoRecord) {
-        return;
-      }
-      offset -= 1;
-      return undoRecord;
-    },
-    redo() {
-      const redoRecord = history[history.length + offset];
-      if (!redoRecord) {
-        return;
-      }
-      offset += 1;
-      return redoRecord;
-    },
-    hasUndo() {
-      return !!history[history.length - 1 + offset];
-    },
-    hasRedo() {
-      return !!history[history.length + offset];
-    }
-  };
-}
-
+// EXTERNAL MODULE: ./node_modules/@wordpress/undo-manager/build-module/index.js
+var build_module = __webpack_require__(6689);
 ;// ./node_modules/@wordpress/compose/build-module/hooks/use-state-with-history/index.js
 /**
  * WordPress dependencies
@@ -4927,7 +4912,7 @@ function undoRedoReducer(state, action) {
 }
 function initReducer(value) {
   return {
-    manager: createUndoManager(),
+    manager: (0,build_module.createUndoManager)(),
     value
   };
 }
@@ -5020,7 +5005,7 @@ const OPERATOR_EVALUATORS = {
   '>=': (breakpointValue, width) => width >= breakpointValue,
   '<': (breakpointValue, width) => width < breakpointValue
 };
-const ViewportMatchWidthContext = (0,external_wp_element_namespaceObject.createContext)(/** @type {null | number} */null);
+const ViewportMatchWidthContext = (0,external_wp_element_namespaceObject.createContext)( /** @type {null | number} */null);
 
 /**
  * Returns true if the viewport matches the given query, or false otherwise.
@@ -5094,7 +5079,6 @@ function useResizeObserver(callback, resizeObserverOptions = {}) {
 }
 
 ;// ./node_modules/@wordpress/compose/build-module/hooks/use-resize-observer/legacy/index.js
-/* wp:polyfill */
 /**
  * External dependencies
  */
@@ -5302,7 +5286,7 @@ const external_wp_priorityQueue_namespaceObject = window["wp"]["priorityQueue"];
  *
  * @param list  New array.
  * @param state Current state.
- * @return First items present in state.
+ * @return First items present iin state.
  */
 function getFirstItemsPresentInState(list, state) {
   const firstItems = [];
@@ -5354,13 +5338,12 @@ function useAsyncList(list, config = {
 /* harmony default export */ const use_async_list = (useAsyncList);
 
 ;// ./node_modules/@wordpress/compose/build-module/hooks/use-warn-on-change/index.js
-/* wp:polyfill */
 /**
  * Internal dependencies
  */
 
 
-// Disable reason: Object and object are distinctly different types in TypeScript and we mean the lowercase object in this case
+// Disable reason: Object and object are distinctly different types in TypeScript and we mean the lowercase object in thise case
 // but eslint wants to force us to use `Object`. See https://stackoverflow.com/questions/49464634/difference-between-object-and-object-in-typescript
 /* eslint-disable jsdoc/check-types */
 /**
@@ -5384,9 +5367,9 @@ function useAsyncList(list, config = {
 function useWarnOnChange(object, prefix = 'Change detection') {
   const previousValues = usePrevious(object);
   Object.entries(previousValues !== null && previousValues !== void 0 ? previousValues : []).forEach(([key, value]) => {
-    if (value !== object[(/** @type {keyof typeof object} */key)]) {
+    if (value !== object[( /** @type {keyof typeof object} */key)]) {
       // eslint-disable-next-line no-console
-      console.warn(`${prefix}: ${key} key changed:`, value, object[(/** @type {keyof typeof object} */key)]
+      console.warn(`${prefix}: ${key} key changed:`, value, object[( /** @type {keyof typeof object} */key)]
       /* eslint-enable jsdoc/check-types */);
     }
   });
@@ -5545,10 +5528,36 @@ function useThrottle(fn, wait, options) {
 
 ;// ./node_modules/@wordpress/compose/build-module/hooks/use-drop-zone/index.js
 /**
+ * WordPress dependencies
+ */
+
+
+/**
  * Internal dependencies
  */
 
 
+/* eslint-disable jsdoc/valid-types */
+/**
+ * @template T
+ * @param {T} value
+ * @return {import('react').MutableRefObject<T|null>} A ref with the value.
+ */
+function useFreshRef(value) {
+  /* eslint-enable jsdoc/valid-types */
+  /* eslint-disable jsdoc/no-undefined-types */
+  /** @type {import('react').MutableRefObject<T>} */
+  /* eslint-enable jsdoc/no-undefined-types */
+  // Disable reason: We're doing something pretty JavaScript-y here where the
+  // ref will always have a current value that is not null or undefined but it
+  // needs to start as undefined. We don't want to change the return type so
+  // it's easier to just ts-ignore this specific line that's complaining about
+  // undefined not being part of T.
+  // @ts-ignore
+  const ref = (0,external_wp_element_namespaceObject.useRef)();
+  ref.current = value;
+  return ref;
+}
 
 /**
  * A hook to facilitate drag and drop handling.
@@ -5575,12 +5584,12 @@ function useDropZone({
   onDragEnd: _onDragEnd,
   onDragOver: _onDragOver
 }) {
-  const onDropEvent = useEvent(_onDrop);
-  const onDragStartEvent = useEvent(_onDragStart);
-  const onDragEnterEvent = useEvent(_onDragEnter);
-  const onDragLeaveEvent = useEvent(_onDragLeave);
-  const onDragEndEvent = useEvent(_onDragEnd);
-  const onDragOverEvent = useEvent(_onDragOver);
+  const onDropRef = useFreshRef(_onDrop);
+  const onDragStartRef = useFreshRef(_onDragStart);
+  const onDragEnterRef = useFreshRef(_onDragEnter);
+  const onDragLeaveRef = useFreshRef(_onDragLeave);
+  const onDragEndRef = useFreshRef(_onDragEnd);
+  const onDragOverRef = useFreshRef(_onDragOver);
   return useRefEffect(elem => {
     if (isDisabled) {
       return;
@@ -5619,7 +5628,7 @@ function useDropZone({
       } while (elementToCheck = elementToCheck.parentElement);
       return false;
     }
-    function maybeDragStart(/** @type {DragEvent} */event) {
+    function maybeDragStart( /** @type {DragEvent} */event) {
       if (isDragging) {
         return;
       }
@@ -5631,35 +5640,35 @@ function useDropZone({
       // node is removed.
       ownerDocument.addEventListener('dragend', maybeDragEnd);
       ownerDocument.addEventListener('mousemove', maybeDragEnd);
-      if (_onDragStart) {
-        onDragStartEvent(event);
+      if (onDragStartRef.current) {
+        onDragStartRef.current(event);
       }
     }
-    function onDragEnter(/** @type {DragEvent} */event) {
+    function onDragEnter( /** @type {DragEvent} */event) {
       event.preventDefault();
 
       // The `dragenter` event will also fire when entering child
       // elements, but we only want to call `onDragEnter` when
       // entering the drop zone, which means the `relatedTarget`
       // (element that has been left) should be outside the drop zone.
-      if (element.contains(/** @type {Node} */event.relatedTarget)) {
+      if (element.contains( /** @type {Node} */event.relatedTarget)) {
         return;
       }
-      if (_onDragEnter) {
-        onDragEnterEvent(event);
+      if (onDragEnterRef.current) {
+        onDragEnterRef.current(event);
       }
     }
-    function onDragOver(/** @type {DragEvent} */event) {
+    function onDragOver( /** @type {DragEvent} */event) {
       // Only call onDragOver for the innermost hovered drop zones.
-      if (!event.defaultPrevented && _onDragOver) {
-        onDragOverEvent(event);
+      if (!event.defaultPrevented && onDragOverRef.current) {
+        onDragOverRef.current(event);
       }
 
       // Prevent the browser default while also signalling to parent
       // drop zones that `onDragOver` is already handled.
       event.preventDefault();
     }
-    function onDragLeave(/** @type {DragEvent} */event) {
+    function onDragLeave( /** @type {DragEvent} */event) {
       // The `dragleave` event will also fire when leaving child
       // elements, but we only want to call `onDragLeave` when
       // leaving the drop zone, which means the `relatedTarget`
@@ -5671,11 +5680,11 @@ function useDropZone({
       if (isElementInZone(event.relatedTarget)) {
         return;
       }
-      if (_onDragLeave) {
-        onDragLeaveEvent(event);
+      if (onDragLeaveRef.current) {
+        onDragLeaveRef.current(event);
       }
     }
-    function onDrop(/** @type {DragEvent} */event) {
+    function onDrop( /** @type {DragEvent} */event) {
       // Don't handle drop if an inner drop zone already handled it.
       if (event.defaultPrevented) {
         return;
@@ -5690,23 +5699,23 @@ function useDropZone({
       // not recognized.
       // eslint-disable-next-line no-unused-expressions
       event.dataTransfer && event.dataTransfer.files.length;
-      if (_onDrop) {
-        onDropEvent(event);
+      if (onDropRef.current) {
+        onDropRef.current(event);
       }
       maybeDragEnd(event);
     }
-    function maybeDragEnd(/** @type {MouseEvent} */event) {
+    function maybeDragEnd( /** @type {MouseEvent} */event) {
       if (!isDragging) {
         return;
       }
       isDragging = false;
       ownerDocument.removeEventListener('dragend', maybeDragEnd);
       ownerDocument.removeEventListener('mousemove', maybeDragEnd);
-      if (_onDragEnd) {
-        onDragEndEvent(event);
+      if (onDragEndRef.current) {
+        onDragEndRef.current(event);
       }
     }
-    element.setAttribute('data-is-drop-zone', 'true');
+    element.dataset.isDropZone = 'true';
     element.addEventListener('drop', onDrop);
     element.addEventListener('dragenter', onDragEnter);
     element.addEventListener('dragover', onDragOver);
@@ -5715,7 +5724,7 @@ function useDropZone({
     // the document.
     ownerDocument.addEventListener('dragenter', maybeDragStart);
     return () => {
-      element.removeAttribute('data-is-drop-zone');
+      delete element.dataset.isDropZone;
       element.removeEventListener('drop', onDrop);
       element.removeEventListener('dragenter', onDragEnter);
       element.removeEventListener('dragover', onDragOver);
@@ -5823,7 +5832,7 @@ function useFixedWindowList(elementRef, itemHeight, totalItems, options) {
     visibleItems: initWindowSize,
     start: 0,
     end: initWindowSize,
-    itemInView: (/** @type {number} */index) => {
+    itemInView: ( /** @type {number} */index) => {
       return index >= 0 && index <= initWindowSize;
     }
   });
@@ -5832,7 +5841,7 @@ function useFixedWindowList(elementRef, itemHeight, totalItems, options) {
       return;
     }
     const scrollContainer = (0,external_wp_dom_namespaceObject.getScrollContainer)(elementRef.current);
-    const measureWindow = (/** @type {boolean | undefined} */initRender) => {
+    const measureWindow = ( /** @type {boolean | undefined} */initRender) => {
       var _options$windowOversc;
       if (!scrollContainer) {
         return;
@@ -5848,7 +5857,7 @@ function useFixedWindowList(elementRef, itemHeight, totalItems, options) {
           visibleItems,
           start,
           end,
-          itemInView: (/** @type {number} */index) => {
+          itemInView: ( /** @type {number} */index) => {
             return start <= index && index <= end;
           }
         };
@@ -5875,7 +5884,7 @@ function useFixedWindowList(elementRef, itemHeight, totalItems, options) {
       return;
     }
     const scrollContainer = (0,external_wp_dom_namespaceObject.getScrollContainer)(elementRef.current);
-    const handleKeyDown = (/** @type {KeyboardEvent} */event) => {
+    const handleKeyDown = ( /** @type {KeyboardEvent} */event) => {
       switch (event.keyCode) {
         case external_wp_keycodes_namespaceObject.HOME:
           {

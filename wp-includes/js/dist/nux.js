@@ -205,7 +205,6 @@ function enableTips() {
 }
 
 ;// ./node_modules/@wordpress/nux/build-module/store/selectors.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -357,6 +356,7 @@ const close_close = /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx
 /**
  * Internal dependencies
  */
+
 
 
 function onClick(event) {

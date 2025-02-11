@@ -659,7 +659,7 @@ const PHONE_REGEXP = /^(tel:)?(\+)?\d{6,15}$/;
  * @return {boolean} Whether or not it looks like a phone number.
  */
 function isPhoneNumber(phoneNumber) {
-  // Remove any separator from phone number.
+  // Remove any seperator from phone number.
   phoneNumber = phoneNumber.replace(/[-.() ]/g, '');
   return PHONE_REGEXP.test(phoneNumber);
 }
@@ -815,7 +815,6 @@ function getQueryString(url) {
 }
 
 ;// ./node_modules/@wordpress/url/build-module/build-query-string.js
-/* wp:polyfill */
 /**
  * Generates URL-encoded query string using input query data.
  *
@@ -985,7 +984,6 @@ function safeDecodeURIComponent(uriComponent) {
 }
 
 ;// ./node_modules/@wordpress/url/build-module/get-query-args.js
-/* wp:polyfill */
 /**
  * Internal dependencies
  */
@@ -1170,7 +1168,6 @@ function hasQueryArg(url, arg) {
 }
 
 ;// ./node_modules/@wordpress/url/build-module/remove-query-args.js
-/* wp:polyfill */
 /**
  * Internal dependencies
  */
@@ -1374,7 +1371,6 @@ function getFilename(url) {
 }
 
 ;// ./node_modules/@wordpress/url/build-module/normalize-path.js
-/* wp:polyfill */
 /**
  * Given a path, returns a normalized path where equal query parameter values
  * will be treated as identical, regardless of order they appear in the original
@@ -1385,9 +1381,9 @@ function getFilename(url) {
  * @return {string} Normalized path.
  */
 function normalizePath(path) {
-  const split = path.split('?');
-  const query = split[1];
-  const base = split[0];
+  const splitted = path.split('?');
+  const query = splitted[1];
+  const base = splitted[0];
   if (!query) {
     return base;
   }

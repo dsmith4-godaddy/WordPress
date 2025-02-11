@@ -6,11 +6,6 @@
  * @since 2.3.0
  */
 
-// Don't load directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	die( '-1' );
-}
-
 /**
  * Checks WordPress version against the newest version.
  *

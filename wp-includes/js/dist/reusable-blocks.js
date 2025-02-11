@@ -69,7 +69,6 @@ const external_wp_blocks_namespaceObject = window["wp"]["blocks"];
 ;// external ["wp","i18n"]
 const external_wp_i18n_namespaceObject = window["wp"]["i18n"];
 ;// ./node_modules/@wordpress/reusable-blocks/build-module/store/actions.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -250,7 +249,6 @@ const external_wp_notices_namespaceObject = window["wp"]["notices"];
 ;// external ["wp","coreData"]
 const external_wp_coreData_namespaceObject = window["wp"]["coreData"];
 ;// ./node_modules/@wordpress/reusable-blocks/build-module/components/reusable-blocks-menu-items/reusable-block-convert-button.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -278,6 +276,8 @@ const external_wp_coreData_namespaceObject = window["wp"]["coreData"];
  * @param {()=>void} props.onClose      Callback to close the menu.
  * @return {import('react').ComponentType} The menu control or null.
  */
+
+
 
 function ReusableBlockConvertButton({
   clientIds,
@@ -426,6 +426,8 @@ const external_wp_url_namespaceObject = window["wp"]["url"];
  */
 
 
+
+
 function ReusableBlocksManageButton({
   clientId
 }) {
@@ -491,6 +493,8 @@ function ReusableBlocksManageButton({
 /**
  * Internal dependencies
  */
+
+
 
 
 

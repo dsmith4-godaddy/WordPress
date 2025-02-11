@@ -923,7 +923,7 @@ class WP_Site_Health {
 			),
 			'hash'      => array(
 				'function' => 'hash',
-				'required' => true,
+				'required' => false,
 			),
 			'imagick'   => array(
 				'extension' => 'imagick',

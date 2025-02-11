@@ -764,10 +764,8 @@ switch ( $action ) {
 		break;
 
 	case 'postpass':
-		$redirect_to = $_POST['redirect_to'] ?? wp_get_referer();
-
 		if ( ! isset( $_POST['post_password'] ) || ! is_string( $_POST['post_password'] ) ) {
-			wp_safe_redirect( $redirect_to );
+			wp_safe_redirect( wp_get_referer() );
 			exit;
 		}
 
@@ -784,17 +782,18 @@ switch ( $action ) {
 		 *
 		 * @param int $expires The expiry time, as passed to setcookie().
 		 */
-		$expire = apply_filters( 'post_password_expires', time() + 10 * DAY_IN_SECONDS );
+		$expire  = apply_filters( 'post_password_expires', time() + 10 * DAY_IN_SECONDS );
+		$referer = wp_get_referer();
 
-		if ( $redirect_to ) {
-			$secure = ( 'https' === parse_url( $redirect_to, PHP_URL_SCHEME ) );
+		if ( $referer ) {
+			$secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
 		} else {
 			$secure = false;
 		}
 
 		setcookie( 'wp-postpass_' . COOKIEHASH, $hasher->HashPassword( wp_unslash( $_POST['post_password'] ) ), $expire, COOKIEPATH, COOKIE_DOMAIN, $secure );
 
-		wp_safe_redirect( $redirect_to );
+		wp_safe_redirect( wp_get_referer() );
 		exit;
 
 	case 'logout':

@@ -184,6 +184,7 @@ const external_ReactJSXRuntime_namespaceObject = window["ReactJSXRuntime"];
 
 
 
+
 const EMPTY_OBJECT = {};
 function rendererPath(block, attributes = null, urlQueryArgs = {}) {
   return (0,external_wp_url_namespaceObject.addQueryArgs)(`/wp/v2/block-renderer/${block}`, {

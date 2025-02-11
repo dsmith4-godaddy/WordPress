@@ -386,11 +386,11 @@ function PreferenceToggleMenuItem({
   } = (0,external_wp_data_namespaceObject.useDispatch)(store);
   const speakMessage = () => {
     if (isActive) {
-      const message = messageDeactivated || (0,external_wp_i18n_namespaceObject.sprintf)(/* translators: %s: preference name, e.g. 'Fullscreen mode' */
+      const message = messageDeactivated || (0,external_wp_i18n_namespaceObject.sprintf)( /* translators: %s: preference name, e.g. 'Fullscreen mode' */
       (0,external_wp_i18n_namespaceObject.__)('Preference deactivated - %s'), label);
       (0,external_wp_a11y_namespaceObject.speak)(message);
     } else {
-      const message = messageActivated || (0,external_wp_i18n_namespaceObject.sprintf)(/* translators: %s: preference name, e.g. 'Fullscreen mode' */
+      const message = messageActivated || (0,external_wp_i18n_namespaceObject.sprintf)( /* translators: %s: preference name, e.g. 'Fullscreen mode' */
       (0,external_wp_i18n_namespaceObject.__)('Preference activated - %s'), label);
       (0,external_wp_a11y_namespaceObject.speak)(message);
     }
@@ -420,6 +420,7 @@ function PreferenceToggleMenuItem({
 /**
  * WordPress dependencies
  */
+
 
 
 function BaseOption({
@@ -498,6 +499,7 @@ function PreferencesModal({
 
 ;// ./node_modules/@wordpress/preferences/build-module/components/preferences-modal-section/index.js
 
+
 const Section = ({
   description,
   title,
@@ -536,7 +538,7 @@ const external_wp_element_namespaceObject = window["wp"]["element"];
  * Return an SVG icon.
  *
  * @param {IconProps}                                 props icon is the SVG component to render
- *                                                          size is a number specifying the icon size in pixels
+ *                                                          size is a number specifiying the icon size in pixels
  *                                                          Other props will be passed to wrapped SVG component
  * @param {import('react').ForwardedRef<HTMLElement>} ref   The forwarded ref to the SVG element.
  *
@@ -599,7 +601,6 @@ const {
 } = (0,external_wp_privateApis_namespaceObject.__dangerousOptInToUnstableAPIsOnlyForCoreModules)('I acknowledge private features are not for use in themes or plugins and doing so will break in the next version of WordPress.', '@wordpress/preferences');
 
 ;// ./node_modules/@wordpress/preferences/build-module/components/preferences-modal-tabs/index.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -612,6 +613,7 @@ const {
 /**
  * Internal dependencies
  */
+
 
 
 const {
@@ -683,10 +685,10 @@ function PreferencesModalTabs({
       })
     });
   } else {
-    modalContent = /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.Navigator, {
+    modalContent = /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.__experimentalNavigatorProvider, {
       initialPath: "/",
       className: "preferences__provider",
-      children: [/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Navigator.Screen, {
+      children: [/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.__experimentalNavigatorScreen, {
         path: "/",
         children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Card, {
           isBorderless: true,
@@ -694,7 +696,7 @@ function PreferencesModalTabs({
           children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.CardBody, {
             children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.__experimentalItemGroup, {
               children: tabs.map(tab => {
-                return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Navigator.Button, {
+                return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.__experimentalNavigatorButton, {
                   path: `/${tab.name}`,
                   as: external_wp_components_namespaceObject.__experimentalItem,
                   isAction: true,
@@ -716,7 +718,7 @@ function PreferencesModalTabs({
           })
         })
       }), sections.length && sections.map(section => {
-        return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Navigator.Screen, {
+        return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.__experimentalNavigatorScreen, {
           path: `/${section.name}`,
           children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.Card, {
             isBorderless: true,
@@ -726,7 +728,7 @@ function PreferencesModalTabs({
               justify: "left",
               size: "small",
               gap: "6",
-              children: [/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Navigator.BackButton, {
+              children: [/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.__experimentalNavigatorBackButton, {
                 icon: (0,external_wp_i18n_namespaceObject.isRTL)() ? chevron_right : chevron_left,
                 label: (0,external_wp_i18n_namespaceObject.__)('Back')
               }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.__experimentalText, {

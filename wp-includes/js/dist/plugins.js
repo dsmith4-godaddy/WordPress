@@ -231,16 +231,12 @@ const external_wp_isShallowEqual_namespaceObject = window["wp"]["isShallowEqual"
 var external_wp_isShallowEqual_default = /*#__PURE__*/__webpack_require__.n(external_wp_isShallowEqual_namespaceObject);
 ;// external ["wp","compose"]
 const external_wp_compose_namespaceObject = window["wp"]["compose"];
-;// external ["wp","deprecated"]
-const external_wp_deprecated_namespaceObject = window["wp"]["deprecated"];
-var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external_wp_deprecated_namespaceObject);
 ;// external "ReactJSXRuntime"
 const external_ReactJSXRuntime_namespaceObject = window["ReactJSXRuntime"];
 ;// ./node_modules/@wordpress/plugins/build-module/components/plugin-context/index.js
 /**
  * WordPress dependencies
  */
-
 
 
 
@@ -267,8 +263,6 @@ function usePluginContext() {
  * A Higher Order Component used to inject Plugin context to the
  * wrapped component.
  *
- * @deprecated 6.8.0 Use `usePluginContext` hook instead.
- *
  * @param  mapContextToProps Function called on every context change,
  *                           expected to return object of props to
  *                           merge with the component's own props.
@@ -276,10 +270,6 @@ function usePluginContext() {
  * @return {Component} Enhanced component with injected context as props.
  */
 const withPluginContext = mapContextToProps => (0,external_wp_compose_namespaceObject.createHigherOrderComponent)(OriginalComponent => {
-  external_wp_deprecated_default()('wp.plugins.withPluginContext', {
-    since: '6.8.0',
-    alternative: 'wp.plugins.usePluginContext'
-  });
   return props => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(Context.Consumer, {
     children: context => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(OriginalComponent, {
       ...props,
@@ -347,7 +337,6 @@ const plugins = /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(ex
 /* harmony default export */ const library_plugins = (plugins);
 
 ;// ./node_modules/@wordpress/plugins/build-module/api/index.js
-/* wp:polyfill */
 /* eslint no-console: [ 'error', { allow: [ 'error' ] } ] */
 /**
  * External dependencies
@@ -548,7 +537,6 @@ function getPlugins(scope) {
 }
 
 ;// ./node_modules/@wordpress/plugins/build-module/components/plugin-area/index.js
-/* wp:polyfill */
 /**
  * External dependencies
  */

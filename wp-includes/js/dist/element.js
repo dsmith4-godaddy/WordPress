@@ -135,7 +135,6 @@ __webpack_require__.d(__webpack_exports__, {
 ;// external "React"
 const external_React_namespaceObject = window["React"];
 ;// ./node_modules/@wordpress/element/build-module/create-interpolate-element.js
-/* wp:polyfill */
 /**
  * Internal dependencies
  */
@@ -446,7 +445,6 @@ function closeOuterElement(endOffset) {
 /* harmony default export */ const create_interpolate_element = (createInterpolateElement);
 
 ;// ./node_modules/@wordpress/element/build-module/react.js
-/* wp:polyfill */
 /**
  * External dependencies
  */
@@ -832,7 +830,7 @@ const Platform = {
 };
 /**
  * Component used to detect the current Platform being used.
- * Use Platform.OS === 'web' to detect if running on web environment.
+ * Use Platform.OS === 'web' to detect if running on web enviroment.
  *
  * This is the same concept as the React Native implementation.
  *
@@ -1153,19 +1151,10 @@ var __setModuleDefault = Object.create ? (function(o, v) {
   o["default"] = v;
 };
 
-var ownKeys = function(o) {
-  ownKeys = Object.getOwnPropertyNames || function (o) {
-    var ar = [];
-    for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-    return ar;
-  };
-  return ownKeys(o);
-};
-
 function __importStar(mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+  if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
   __setModuleDefault(result, mod);
   return result;
 }
@@ -1246,25 +1235,12 @@ function __disposeResources(env) {
   return next();
 }
 
-function __rewriteRelativeImportExtension(path, preserveJsx) {
-  if (typeof path === "string" && /^\.\.?\//.test(path)) {
-      return path.replace(/\.(tsx)$|((?:\.d)?)((?:\.[^./]+?)?)\.([cm]?)ts$/i, function (m, tsx, d, ext, cm) {
-          return tsx ? preserveJsx ? ".jsx" : ".js" : d && (!ext || !cm) ? m : (d + ext + "." + cm.toLowerCase() + "js");
-      });
-  }
-  return path;
-}
-
 /* harmony default export */ const tslib_es6 = ({
   __extends,
   __assign,
   __rest,
   __decorate,
   __param,
-  __esDecorate,
-  __runInitializers,
-  __propKey,
-  __setFunctionName,
   __metadata,
   __awaiter,
   __generator,
@@ -1287,7 +1263,6 @@ function __rewriteRelativeImportExtension(path, preserveJsx) {
   __classPrivateFieldIn,
   __addDisposableResource,
   __disposeResources,
-  __rewriteRelativeImportExtension,
 });
 
 ;// ./node_modules/lower-case/dist.es2015/index.js
@@ -1390,7 +1365,6 @@ function paramCase(input, options) {
 ;// external ["wp","escapeHtml"]
 const external_wp_escapeHtml_namespaceObject = window["wp"]["escapeHtml"];
 ;// ./node_modules/@wordpress/element/build-module/raw-html.js
-/* wp:polyfill */
 /**
  * Internal dependencies
  */
@@ -1434,7 +1408,6 @@ function RawHTML({
 }
 
 ;// ./node_modules/@wordpress/element/build-module/serialize.js
-/* wp:polyfill */
 /**
  * Parts of this source were derived and modified from fast-react-render,
  * released under the MIT license.
@@ -1812,7 +1785,7 @@ function renderNativeComponent(type, props, context, legacyContext = {}) {
  * @return {string} Serialized element
  */
 function renderComponent(Component, props, context, legacyContext = {}) {
-  const instance = new (/** @type {import('react').ComponentClass} */
+  const instance = new ( /** @type {import('react').ComponentClass} */
   Component)(props, legacyContext);
   if (typeof
   // Ignore reason: Current prettier reformats parens and mangles type assertion

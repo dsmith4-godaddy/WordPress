@@ -214,8 +214,10 @@ function CopyButton({
   children
 }) {
   const ref = (0,external_wp_compose_namespaceObject.useCopyToClipboard)(text);
-  return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Button, {
-    size: "compact",
+  return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Button
+  // TODO: Switch to `true` (40px size) if possible
+  , {
+    __next40pxDefaultSize: false,
     variant: "secondary",
     ref: ref,
     children: children
@@ -530,6 +532,7 @@ const store = (0,external_wp_data_namespaceObject.createReduxStore)(STORE_NAME, 
  */
 
 
+
 function Inserter({
   setIsOpened
 }) {
@@ -544,8 +547,11 @@ function Inserter({
         id: inserterTitleId,
         className: "customize-widgets-layout__inserter-panel-header-title",
         children: (0,external_wp_i18n_namespaceObject.__)('Add a block')
-      }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Button, {
-        size: "small",
+      }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Button
+      // TODO: Switch to `true` (40px size) if possible
+      , {
+        __next40pxDefaultSize: false,
+        className: "customize-widgets-layout__inserter-panel-header-close-button",
         icon: close_small,
         onClick: () => setIsOpened(false),
         "aria-label": (0,external_wp_i18n_namespaceObject.__)('Close inserter')
@@ -672,10 +678,11 @@ const textFormattingShortcuts = [{
 }];
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/components/keyboard-shortcut-help-modal/shortcut.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
+
+
 
 
 
@@ -768,7 +775,6 @@ function DynamicShortcut({
 /* harmony default export */ const dynamic_shortcut = (DynamicShortcut);
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/components/keyboard-shortcut-help-modal/index.js
-/* wp:polyfill */
 /**
  * External dependencies
  */
@@ -785,6 +791,7 @@ function DynamicShortcut({
 /**
  * Internal dependencies
  */
+
 
 
 
@@ -905,6 +912,8 @@ function KeyboardShortcutHelpModal({
  */
 
 
+
+
 function MoreMenu() {
   const [isKeyboardShortcutsModalActive, setIsKeyboardShortcutsModalVisible] = (0,external_wp_element_namespaceObject.useState)(false);
   const toggleKeyboardShortcutsModal = () => setIsKeyboardShortcutsModalVisible(!isKeyboardShortcutsModalActive);
@@ -997,6 +1006,8 @@ function MoreMenu() {
 
 
 
+
+
 function Header({
   sidebar,
   inserter,
@@ -1046,7 +1057,7 @@ function Header({
           }
         }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(MoreMenu, {})]
       })
-    }), (0,external_wp_element_namespaceObject.createPortal)(/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(components_inserter, {
+    }), (0,external_wp_element_namespaceObject.createPortal)( /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(components_inserter, {
       setIsOpened: setIsInserterOpened
     }), inserter.contentContainer[0])]
   });
@@ -1226,7 +1237,6 @@ function widgetToBlock({
 }
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/components/sidebar-block-editor/use-sidebar-block-editor.js
-/* wp:polyfill */
 /**
  * External dependencies
  */
@@ -1385,7 +1395,6 @@ function FocusControl({
 const useFocusControl = () => (0,external_wp_element_namespaceObject.useContext)(FocusControlContext);
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/components/focus-control/use-blocks-focus-control.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -1468,10 +1477,10 @@ function SidebarEditorProvider({
 }
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/components/welcome-guide/index.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
+
 
 
 
@@ -1506,8 +1515,11 @@ function WelcomeGuide({
     }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("p", {
       className: "customize-widgets-welcome-guide__text",
       children: isEntirelyBlockWidgets ? (0,external_wp_i18n_namespaceObject.__)('Your theme provides different “block” areas for you to add and edit content. Try adding a search bar, social icons, or other types of blocks here and see how they’ll look on your site.') : (0,external_wp_i18n_namespaceObject.__)('You can now add any block to your site’s widget areas. Don’t worry, all of your favorite widgets still work flawlessly.')
-    }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Button, {
-      size: "compact",
+    }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Button
+    // TODO: Switch to `true` (40px size) if possible
+    , {
+      __next40pxDefaultSize: false,
+      className: "customize-widgets-welcome-guide__button",
       variant: "primary",
       onClick: () => toggle('core/customize-widgets', 'welcomeGuide'),
       children: (0,external_wp_i18n_namespaceObject.__)('Got it')
@@ -1664,6 +1676,8 @@ function BlockAppender(props) {
 
 
 
+
+
 const {
   ExperimentalBlockCanvas: BlockCanvas
 } = unlock(external_wp_blockEditor_namespaceObject.privateApis);
@@ -1720,7 +1734,6 @@ function SidebarBlockEditor({
       mediaUpload: mediaUploadBlockEditor,
       hasFixedToolbar: isFixedToolbarActive || !isMediumViewport,
       keepCaretInsideBlock,
-      editorTool: 'edit',
       __unstableHasCustomAppender: true
     };
   }, [hasUploadPermissions, blockEditorSettings, isFixedToolbarActive, isMediumViewport, keepCaretInsideBlock, setIsInserterOpened]);
@@ -1876,7 +1889,6 @@ function useClearSelectedBlock(sidebarControl, popoverRef) {
 }
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/components/customize-widgets/index.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -1886,6 +1898,7 @@ function useClearSelectedBlock(sidebarControl, popoverRef) {
 /**
  * Internal dependencies
  */
+
 
 
 
@@ -1911,7 +1924,7 @@ function CustomizeWidgets({
       unsubscribers.forEach(unsubscriber => unsubscriber());
     };
   }, [sidebarControls]);
-  const activeSidebar = activeSidebarControl && (0,external_wp_element_namespaceObject.createPortal)(/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(ErrorBoundary, {
+  const activeSidebar = activeSidebarControl && (0,external_wp_element_namespaceObject.createPortal)( /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(ErrorBoundary, {
     children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(SidebarBlockEditor, {
       blockEditorSettings: blockEditorSettings,
       sidebar: activeSidebarControl.sidebarAdapter,
@@ -1922,7 +1935,7 @@ function CustomizeWidgets({
 
   // We have to portal this to the parent of both the editor and the inspector,
   // so that the popovers will appear above both of them.
-  const popover = parentContainer && (0,external_wp_element_namespaceObject.createPortal)(/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
+  const popover = parentContainer && (0,external_wp_element_namespaceObject.createPortal)( /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
     className: "customize-widgets-popover",
     ref: popoverRef,
     children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Popover.Slot, {})
@@ -2033,7 +2046,6 @@ function getInspectorSection() {
 }
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/controls/sidebar-section.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -2107,7 +2119,6 @@ function getSidebarSection() {
 }
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/components/sidebar-block-editor/sidebar-adapter.js
-/* wp:polyfill */
 /**
  * Internal dependencies
  */
@@ -2374,7 +2385,6 @@ class SidebarAdapter {
 ;// external ["wp","dom"]
 const external_wp_dom_namespaceObject = window["wp"]["dom"];
 ;// ./node_modules/@wordpress/customize-widgets/build-module/controls/inserter-outer-section.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -2489,7 +2499,6 @@ function getInserterOuterSection() {
 }
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/controls/sidebar-control.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -2540,7 +2549,6 @@ function getSidebarControl() {
 }
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/filters/move-to-sidebar.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -2553,6 +2561,8 @@ function getSidebarControl() {
 /**
  * Internal dependencies
  */
+
+
 
 
 
@@ -2628,7 +2638,6 @@ const replaceMediaUpload = () => external_wp_mediaUtils_namespaceObject.MediaUpl
 (0,external_wp_hooks_namespaceObject.addFilter)('editor.MediaUpload', 'core/edit-widgets/replace-media-upload', replaceMediaUpload);
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/filters/wide-widget-display.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -2660,7 +2669,6 @@ const withWideWidgetDisplay = (0,external_wp_compose_namespaceObject.createHighe
 
 
 ;// ./node_modules/@wordpress/customize-widgets/build-module/index.js
-/* wp:polyfill */
 /**
  * WordPress dependencies
  */
@@ -2723,7 +2731,7 @@ function initialize(editorName, blockEditorSettings) {
         sidebarControls.push(control);
       }
     });
-    (0,external_wp_element_namespaceObject.createRoot)(container).render(/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_element_namespaceObject.StrictMode, {
+    (0,external_wp_element_namespaceObject.createRoot)(container).render( /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_element_namespaceObject.StrictMode, {
       children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(CustomizeWidgets, {
         api: build_module_wp.customize,
         sidebarControls: sidebarControls,
