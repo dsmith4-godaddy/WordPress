@@ -1155,7 +1155,7 @@ function wp_get_update_api_base( $https = true ) {
 	$api_base = apply_filters( 'wp_update_api_base', $api_base );
 
 	// required for back-compat as many old api references in core use http:// explicitly
-	if ( (! $https) && (substr($api_base, 0, 7) == 'http://') && ($api_base === WP_UPDATE_API_DEFAULT)) {
+	if ( (! $https) && ($api_base === WP_UPDATE_API_DEFAULT) ) {
 		$api_base = str_replace( $api_base, 'http://', 'https://' );
 	}
 
