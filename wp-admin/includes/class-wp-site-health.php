@@ -1402,7 +1402,7 @@ class WP_Site_Health {
 			$result['actions'] = sprintf(
 				/* translators: URL of update API */
 				__('Contact the owners of %s for support.'),
-				wp_get_update_api_base();
+				wp_get_update_api_base()
 			);
 		}
 
